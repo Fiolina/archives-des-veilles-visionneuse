@@ -116,6 +116,18 @@
     .sheet p { font-size: 12px; }
     button { padding: 10px; }
   }
+
+ .artwork img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  
 </style>
 </head>
 <body>
@@ -128,12 +140,9 @@
 
   <div class="stage" id="stage">
     <div class="artwork" id="artwork">
-      <article class="sheet" id="sheet">
-        <div class="symbol" id="symbol"></div>
-        <h2 id="title"></h2>
-        <p id="description"></p>
-      </article>
-    </div>
+  <img id="image" alt="Infographie des Archives des Veilles"
+       draggable="false">
+</div>
   </div>
 
   <div class="controls">
@@ -155,20 +164,17 @@
 
 <script>
 const pages = [
-  {
-    symbol: "✧",
-    title: "Le livre d'Énoch",
-    description: "Planche de démonstration 1"
+    {
+    image: "archives/209/1%20b.png",
+    title: "Le livre d'Énoch — Planche 1"
   },
   {
-    symbol: "◈",
-    title: "Les Georgia Guidestones",
-    description: "Planche de démonstration 2"
+    image: "archives/209/2%20a.png",
+    title: "Le livre d'Énoch — Planche 2"
   },
   {
-    symbol: "✦",
-    title: "De Gutenberg à la Source",
-    description: "Planche de démonstration 3"
+    image: "archives/209/3%20a.png",
+    title: "Le livre d'Énoch — Planche 3"
   }
 ];
 
@@ -185,11 +191,10 @@ let previousCenter = null;
 
 function render() {
   const page = pages[index];
+  const image = document.getElementById("image");
 
-  document.getElementById("symbol").textContent = page.symbol;
-  document.getElementById("title").textContent = page.title;
-  document.getElementById("description").textContent =
-    page.description;
+  image.src = page.image;
+  image.alt = page.title;
 
   document.getElementById("counter").textContent =
     `${index + 1} / ${pages.length}`;
