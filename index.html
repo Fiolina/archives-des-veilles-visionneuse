@@ -178,6 +178,9 @@ let x = 0, y = 0;
 let pointers = new Map();
 let previousDistance = null;
 let previousCenter = null;
+let swipeStartX = null;
+let swipeStartY = null;
+let swipePossible = false;
 
 function render() {
   const page = pages[index];
@@ -264,6 +267,16 @@ stage.addEventListener("pointerdown", event => {
   stage.setPointerCapture(event.pointerId);
   pointers.set(event.pointerId, event);
 
+ if (pointers.size === 1 && scale === 1) {
+    swipeStartX = event.clientX;
+    swipeStartY = event.clientY;
+    swipePossible = true;
+  }
+
+  if (pointers.size > 1) {
+    swipePossible = false;
+  }
+
   if (pointers.size === 2) {
     const [a, b] = [...pointers.values()];
     previousDistance = distance(a, b);
@@ -310,7 +323,30 @@ stage.addEventListener("pointermove", event => {
 });
 
 function endPointer(event) {
+  if (
+    swipePossible &&
+    pointers.size === 1 &&
+    scale === 1 &&
+    swipeStartX !== null
+  ) {
+    const dx = event.clientX - swipeStartX;
+    const dy = event.clientY - swipeStartY;
+
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if (dx < 0 && index < pages.length - 1) {
+        index++;
+        render();
+      } else if (dx > 0 && index > 0) {
+        index--;
+        render();
+      }
+    }
+  }
+
   pointers.delete(event.pointerId);
+  swipePossible = false;
+  swipeStartX = null;
+  swipeStartY = null;
   previousDistance = null;
   previousCenter = null;
 
